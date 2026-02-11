@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { Link } from "react-router-dom";
+
 const OverviewCard = ({ isLoading, data }: any) => {
   const Icon = data.icon;
   return (
-    <div
+    <Link
+      to={data.path}
       className={`dashboard-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 cursor-pointer`}
     >
       <div className="flex items-start justify-between">
@@ -21,7 +24,7 @@ const OverviewCard = ({ isLoading, data }: any) => {
           <Icon className={`h-6 w-6 ${data.color}`} />
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

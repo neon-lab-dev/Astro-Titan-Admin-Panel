@@ -25,27 +25,27 @@ export function Sidebar() {
     },
     {
       label: "User Management",
-      path: "/user-management",
+      path: "/dashboard/user-management",
       icon: Users,
     },
     {
       label: "Astrologer Management",
-      path: "/astrologer-management",
+      path: "/dashboard/astrologer-management",
       icon: Star,
     },
     {
       label: "Transactions & Payments",
-      path: "/transactions-payments",
+      path: "/dashboard/transactions-payments",
       icon: CreditCard,
     },
     {
       label: "Content Management",
-      path: "/content-management",
+      path: "/dashboard/content-management",
       icon: FileText,
     },
     {
       label: "Platform Settings",
-      path: "/platform-settings",
+      path: "/dashboard/platform-settings",
       icon: Settings,
     },
   ];
@@ -71,7 +71,7 @@ export function Sidebar() {
               to={item.path}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-sm ${
                 item.path === location.pathname
-                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                  ? "bg-blue-50 dark:bg-blue-900/20 text-yellow-600 dark:text-blue-400"
                   : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
@@ -86,7 +86,7 @@ export function Sidebar() {
       <div className="p-4">
         <button
           onClick={handleLogout}
-          className="flex items-center justify-center gap-2 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 == w-full"
+          className="flex items-center justify-center gap-2 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer w-full"
         >
           <LogOut className="size-5" />
           Logout

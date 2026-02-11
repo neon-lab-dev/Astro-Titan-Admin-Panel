@@ -22,7 +22,7 @@ const Unauthorized = () => {
           You are not authorized to access this route.
         </p>
         <Link to={route}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition"
         >
           Go Back
         </Link>

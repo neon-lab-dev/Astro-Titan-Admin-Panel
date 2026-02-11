@@ -2,105 +2,128 @@
 import OverviewCard from "../../components/OverviewCard/OverviewCard";
 import {
   Users,
-  FileText,
-  User,
-  Briefcase,
-  UserCheck,
-  Users as GroupsIcon,
+  Star,
+  BadgeCheck,
   Clock,
   CreditCard,
-} from "lucide-react";
+  DollarSign,
+  AlertCircle,
+  FileText,
+  CheckCircle,
+  EyeOff,
+} from 'lucide-react';
 
 
-export interface DashboardCard {
+type DashboardCard = {
   id: string;
   title: string;
   value: number;
   icon: any;
+  path: string;
   color: string;
   bgColor: string;
-  endpoint: string;
-  trend?: number;
-  trendLabel?: string;
-}
+};
 
 const Dashboard = () => {
-  const dashboardCards: DashboardCard[] = [
-    {
-      id: "total-users",
-      title: "Total Users",
-      value: 0,
-      icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      endpoint: "/api/admin/users/statistics",
-    },
-    {
-      id: "total-posts",
-      title: "Total Posts",
-      value: 0,
-      icon: FileText,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      endpoint: "/api/admin/dashboard/posts",
-    },
-    {
-      id: "individuals",
-      title: "Individuals",
-      value: 0,
-      icon: User,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      endpoint: "/api/admin/users/statistics",
-    },
-    {
-      id: "professionals",
-      title: "Professionals",
-      value: 0,
-      icon: Briefcase,
-      color: "text-amber-600",
-      bgColor: "bg-amber-50",
-      trend: 12,
-      trendLabel: "Pending requests",
-      endpoint: "/api/admin/professional-requests",
-    },
-    {
-      id: "skilled-users",
-      title: "Skilled Users",
-      value: 0,
-      icon: UserCheck,
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-50",
-      endpoint: "/api/admin/users/statistics",
-    },
-    {
-      id: "groups",
-      title: "Groups",
-      value: 0,
-      icon: GroupsIcon,
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-50",
-      endpoint: "/api/admin/groups",
-    },
-    {
-      id: "pending-verifications",
-      title: "Pending Verifications",
-      value: 0,
-      icon: Clock,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      endpoint: "/api/admin/professional-requests/pending",
-    },
-    {
-      id: "active-subscriptions",
-      title: "Active Subscriptions",
-      value: 0,
-      icon: CreditCard,
-      color: "text-rose-600",
-      bgColor: "bg-rose-50",
-      endpoint: "/api/admin/subscriptions/statistics",
-    },
-  ];
+const dashboardCards: DashboardCard[] = [
+  // User Management Cards
+  {
+    id: "total-users",
+    title: "Total Users",
+    value: 0,
+    icon: Users,
+    path: "/dashboard/user-management",
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+  },
+  
+  // Astrologer Management Cards
+  {
+    id: "total-astrologers",
+    title: "Total Astrologers",
+    value: 0,
+    icon: Star,
+    path: "/dashboard/astrologer-management",
+    color: "text-amber-600",
+    bgColor: "bg-amber-50",
+  },
+  {
+    id: "verified-astrologers",
+    title: "Verified Astrologers",
+    value: 0,
+    icon: BadgeCheck,
+    path: "/dashboard/astrologer-management",
+    color: "text-emerald-600",
+    bgColor: "bg-emerald-50",
+  },
+  {
+    id: "pending-astrologers",
+    title: "Pending Astrologers",
+    value: 0,
+    icon: Clock,
+    path: "/dashboard/astrologer-management",
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-50",
+  },
+
+  // Transactions & Payments Cards
+  {
+    id: "total-transactions",
+    title: "Total Transactions",
+    value: 0,
+    icon: CreditCard,
+    path: "/dashboard/transactions-payments",
+    color: "text-indigo-600",
+    bgColor: "bg-indigo-50",
+  },
+  {
+    id: "revenue-today",
+    title: "Revenue Today",
+    value: 0,
+    icon: DollarSign,
+    path: "/dashboard/transactions-payments",
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+  },
+  {
+    id: "pending-payments",
+    title: "Pending Payments",
+    value: 0,
+    icon: AlertCircle,
+    path: "/dashboard/transactions-payments",
+    color: "text-red-600",
+    bgColor: "bg-red-50",
+  },
+
+  // Content Management Cards
+  {
+    id: "total-content",
+    title: "Total Content",
+    value: 0,
+    icon: FileText,
+    path: "/dashboard/content-management",
+    color: "text-violet-600",
+    bgColor: "bg-violet-50",
+  },
+  {
+    id: "published-content",
+    title: "Published Content",
+    value: 0,
+    icon: CheckCircle,
+    path: "/dashboard/content-management",
+    color: "text-teal-600",
+    bgColor: "bg-teal-50",
+  },
+  {
+    id: "pending-reviews",
+    title: "Pending Reviews",
+    value: 0,
+    icon: EyeOff,
+    path: "/dashboard/content-management",
+    color: "text-orange-600",
+    bgColor: "bg-orange-50",
+  },
+];
 
   return (
     <div>

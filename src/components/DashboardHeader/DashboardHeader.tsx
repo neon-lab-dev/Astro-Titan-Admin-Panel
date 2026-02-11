@@ -6,7 +6,7 @@ export function DashboardHeader() {
           <div className="flex gap-2">
             <h1 className="text-xl font-medium text-neutral-700 dark:text-gray-400">
               Welcome back,{" "}
-              <span className="font-bold text-blue-600 dark:text-blue-400">
+              <span className="font-bold text-yellow-600 dark:text-blue-400">
                 {/* {user?.name} */}
                 Rahul
               </span>
