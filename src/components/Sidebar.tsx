@@ -5,7 +5,6 @@ import {
   CreditCard,
   FileText,
   LogOut,
-  Settings,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -39,14 +38,9 @@ export function Sidebar() {
       icon: CreditCard,
     },
     {
-      label: "Content Management",
-      path: "/dashboard/content-management",
+      label: "Subscription Plan",
+      path: "/dashboard/subscription-plan",
       icon: FileText,
-    },
-    {
-      label: "Platform Settings",
-      path: "/dashboard/platform-settings",
-      icon: Settings,
     },
   ];
 

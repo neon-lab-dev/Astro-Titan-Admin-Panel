@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Login from "../pages/Login/Login";
-import Unauthorized from './../pages/Unauthorized/Unauthorized';
+import Unauthorized from "./../pages/Unauthorized/Unauthorized";
 import NotFound from "../pages/NotFound/NotFound";
 // import { ProtectedRoute } from "./ProtectedRoute";
 import Layout from "../layouts/Layout";
@@ -8,8 +8,9 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import UserManagement from "../pages/UserManagement/UserManagement";
 import AstrologerManagement from "../pages/AstrologerManagement/AstrologerManagement";
 import TransactionsAndPayments from "../pages/TransactionsAndPayments/TransactionsAndPayments";
-import ContentManagement from "../pages/ContentManagement/ContentManagement";
-import PlatformSettings from "../pages/PlatformSettings/PlatformSettings";
+import SubscriptionPlan from "../pages/SubscriptionPlan/SubscriptionPlan";
+import UserDetails from "../pages/UserDetails/UserDetails";
+import AstrologerDetails from "../pages/AstrologerDetails/AstrologerDetails";
 
 export const router = createBrowserRouter([
   {
@@ -35,20 +36,24 @@ export const router = createBrowserRouter([
         element: <UserManagement />,
       },
       {
+        path: "user/:id",
+        element: <UserDetails />,
+      },
+      {
         path: "astrologer-management",
         element: <AstrologerManagement />,
+      },
+      {
+        path: "astrologer/:id",
+        element: <AstrologerDetails />,
       },
       {
         path: "transactions-payments",
         element: <TransactionsAndPayments />,
       },
       {
-        path: "content-management",
-        element: <ContentManagement />,
-      },
-      {
-        path: "platform-settings",
-        element: <PlatformSettings />,
+        path: "subscription-plan",
+        element: <SubscriptionPlan />,
       },
     ],
   },
