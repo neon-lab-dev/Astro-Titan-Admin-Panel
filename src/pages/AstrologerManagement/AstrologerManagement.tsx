@@ -7,7 +7,7 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import SuspendUserModal from "../../components/SuspendUserModal/SuspendUserModal";
 import { useActiveAccountMutation } from "../../redux/Features/Account/accountApi";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AstrologerManagement = () => {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ const AstrologerManagement = () => {
   const [limit, setLimit] = useState<number>(10);
   const skip = (page - 1) * limit;
   const [keyword, setKeyword] = useState<string>("");
+  const [identityStatus, setIdentityStatus] = useState<string>("");
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
     null,
   );
@@ -27,6 +28,7 @@ const AstrologerManagement = () => {
     page,
     limit,
     keyword,
+    identityStatus,
   });
 
   const astrologerTheads: any[] = [
@@ -61,7 +63,12 @@ const AstrologerManagement = () => {
 
       displayName: (
         <div className="font-medium">
-          <p>{astrologer?.displayName}</p>
+          <Link
+            to={`/dashboard/astrologer/${astrologer?._id}`}
+            className="hover:underline"
+          >
+            {astrologer?.displayName}
+          </Link>
           <p className="text-xs text-gray-500">
             {astrologer?.firstName} {astrologer?.lastName}
           </p>
@@ -180,6 +187,37 @@ const AstrologerManagement = () => {
     },
   ];
 
+  const identityStatuses = [
+    {
+      label: "Approved",
+      value: "approved",
+    },
+    {
+      label: "Pending",
+      value: "pending",
+    },
+    {
+      label: "Rejected",
+      value: "rejected",
+    },
+  ];
+
+  const children = (
+    <div className="flex items-center gap-3">
+      <select
+        value={identityStatus ?? ""}
+        onChange={(e) => setIdentityStatus && setIdentityStatus(e.target.value)}
+        className="input input-sm px-3 py-2 border border-gray-300 focus:border-primary-10 transition duration-300 focus:outline-none rounded-md text-sm shadow-sm cursor-pointer"
+      >
+        <option value="">Select Status </option>
+        {identityStatuses?.map((filter: any) => (
+          <option key={filter?.value} value={filter?.value}>
+            {filter?.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
   const handleActiveAccount = async (id: string) => {
     try {
       await toast.promise(activeAccount(id).unwrap(), {
@@ -202,6 +240,7 @@ const AstrologerManagement = () => {
         theads={astrologerTheads}
         data={astrologerTableData || []}
         actions={actions}
+        children={children}
         totalPages={data?.data?.meta?.totalPages || 1}
         currentPage={page}
         onPageChange={(p) => setPage(p)}

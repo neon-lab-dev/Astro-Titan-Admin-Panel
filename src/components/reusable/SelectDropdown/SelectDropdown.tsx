@@ -28,7 +28,7 @@ const SelectDropdown = forwardRef<HTMLSelectElement, DropdownProps>(
           required={isRequired}
           disabled={isDisabled}
           className={`px-[18px] py-[14px] rounded-lg bg-neutral-70 border text-neutral-65 focus:outline-none focus:border-primary-10 transition duration-300 ${
-            error ? "border-red-500" : "border-neutral-75"
+            error ? "border-red-500" : "border-gray-300"
           }`}
           {...rest}
         >

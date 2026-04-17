@@ -7,8 +7,8 @@ const astrologerApi = baseApi.injectEndpoints({
       any,
       {
         skip?: number;
-        city?: string;
-        area?: string;
+        identityStatus?: string;
+        country?: string;
         keyword?: string;
         page?: number;
         limit?: number;
@@ -16,8 +16,8 @@ const astrologerApi = baseApi.injectEndpoints({
       }
     >({
       query: ({
-        city = "",
-        area = "",
+        identityStatus = "",
+        country = "",
         keyword = "",
         page = 1,
         limit = 10,
@@ -25,8 +25,8 @@ const astrologerApi = baseApi.injectEndpoints({
       } = {}) => {
         const params = new URLSearchParams();
 
-        if (city) params.append("city", city);
-        if (area) params.append("area", area);
+        if (identityStatus) params.append("identityStatus", identityStatus);
+        if (country) params.append("country", country);
         if (keyword) params.append("keyword", keyword);
         params.append("page", page.toString());
         params.append("limit", limit.toString());

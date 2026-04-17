@@ -133,7 +133,7 @@ const LogoLoader = ({
                   variants={progressVariants}
                   initial="initial"
                   animate="animate"
-                  className="h-full bg-gradient-primary"
+                  className="h-full bg-[#d4af37]"
                 />
               </div>
               <motion.p

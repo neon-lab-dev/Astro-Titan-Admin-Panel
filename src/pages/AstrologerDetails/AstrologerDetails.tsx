@@ -25,11 +25,12 @@ import Button from "../../components/reusable/Button/Button";
 import SuspendUserModal from "../../components/SuspendUserModal/SuspendUserModal";
 import { useActiveAccountMutation } from "../../redux/Features/Account/accountApi";
 import toast from "react-hot-toast";
+import LogoLoader from "../../components/shared/LogoLoader/LogoLoader";
 
 const AstrologerDetails: React.FC = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState<"about" | "reviews">("about");
-  const { data } = useGetSingleAstrologerQuery(id);
+  const { data, isLoading } = useGetSingleAstrologerQuery(id);
   const [activeAccount] = useActiveAccountMutation();
   const [isSuspendAccountModalOpen, setIsSuspendAccountModalOpen] =
     useState<boolean>(false);
@@ -130,6 +131,14 @@ const AstrologerDetails: React.FC = () => {
       );
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-[80vh] flex items-center justify-center">
+        <LogoLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
