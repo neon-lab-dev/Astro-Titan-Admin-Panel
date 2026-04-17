@@ -24,13 +24,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const baseStyles =
-      "relative flex justify-center py-3 px-4 text-sm font-medium rounded-lg transition-all duration-200 font-Inter focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed";
+      "relative flex justify-center py-2 px-3 text-sm font-medium rounded-lg transition-all duration-200 font-Inter focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed";
 
     const variants = {
       primary:
-        "text-white bg-yellow-600 hover:opacity-90 focus:ring-primary-10 border border-transparent",
+        "text-white bg-[#d4af37] hover:opacity-90 border border-transparent",
       secondary:
-        "text-neutral-20 bg-white border border-primary-10 hover:bg-neutral-50/10 focus:ring-primary-10",
+        "text-neutral-20 bg-white border border-[#d4af37] hover:bg-neutral-50/10",
     };
 
     const widthStyles = fullWidth ? "w-full" : "";

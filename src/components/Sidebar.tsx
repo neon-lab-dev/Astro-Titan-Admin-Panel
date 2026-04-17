@@ -80,7 +80,7 @@ export function Sidebar() {
       <div className="p-4">
         <button
           onClick={handleLogout}
-          className="flex items-center justify-center gap-2 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer w-full"
+          className="flex items-center justify-center gap-2 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#d4af37] hover:bg-[#d4af37]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer w-full"
         >
           <LogOut className="size-5" />
           Logout

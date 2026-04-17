@@ -43,7 +43,7 @@ const astrologerApi = baseApi.injectEndpoints({
 
     getSingleAstrologer: builder.query({
       query: (id) => ({
-        url: `/course/${id}`,
+        url: `/astrologer/${id}`,
         method: "GET",
         credentials: "include",
       }),

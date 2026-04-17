@@ -7,8 +7,10 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import SuspendUserModal from "../../components/SuspendUserModal/SuspendUserModal";
 import { useActiveAccountMutation } from "../../redux/Features/Account/accountApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AstrologerManagement = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const skip = (page - 1) * limit;
@@ -157,8 +159,7 @@ const AstrologerManagement = () => {
       label: "View Profile",
       icon: <FiEye className="inline mr-2" />,
       onClick: (row) => {
-        const url = `/dashboard/astrologer/${row?.userId}`;
-        window.open(url, "_blank");
+        navigate(`/dashboard/astrologer/${row?._id}`);
       },
     },
     {
