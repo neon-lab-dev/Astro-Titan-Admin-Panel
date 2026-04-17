@@ -13,7 +13,6 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaClock,
-  FaThumbsUp,
 } from "react-icons/fa";
 import { MdLocalPhone, MdVerified } from "react-icons/md";
 import { useGetSingleAstrologerQuery } from "../../redux/Features/Astrologer/astrologerApi";
