@@ -30,7 +30,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "total-users",
     title: "Total Users",
-    value: 0,
+    value: 20,
     icon: Users,
     path: "/dashboard/user-management",
     color: "text-blue-600",
@@ -41,7 +41,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "total-astrologers",
     title: "Total Astrologers",
-    value: 0,
+    value: 34,
     icon: Star,
     path: "/dashboard/astrologer-management",
     color: "text-amber-600",
@@ -50,7 +50,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "verified-astrologers",
     title: "Verified Astrologers",
-    value: 0,
+    value: 28,
     icon: BadgeCheck,
     path: "/dashboard/astrologer-management",
     color: "text-emerald-600",
@@ -59,7 +59,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "pending-astrologers",
     title: "Pending Astrologers",
-    value: 0,
+    value: 12,
     icon: Clock,
     path: "/dashboard/astrologer-management",
     color: "text-yellow-600",
@@ -79,7 +79,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "revenue-today",
     title: "Revenue Today",
-    value: 0,
+    value: 5,
     icon: DollarSign,
     path: "/dashboard/transactions-payments",
     color: "text-green-600",
@@ -88,7 +88,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "pending-payments",
     title: "Pending Payments",
-    value: 0,
+    value: 10,
     icon: AlertCircle,
     path: "/dashboard/transactions-payments",
     color: "text-red-600",
@@ -99,7 +99,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "total-content",
     title: "Total Content",
-    value: 0,
+    value: 40,
     icon: FileText,
     path: "/dashboard/content-management",
     color: "text-violet-600",
@@ -108,7 +108,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "published-content",
     title: "Published Content",
-    value: 0,
+    value: 25,
     icon: CheckCircle,
     path: "/dashboard/content-management",
     color: "text-teal-600",
@@ -117,7 +117,7 @@ const dashboardCards: DashboardCard[] = [
   {
     id: "pending-reviews",
     title: "Pending Reviews",
-    value: 0,
+    value: 6,
     icon: EyeOff,
     path: "/dashboard/content-management",
     color: "text-orange-600",

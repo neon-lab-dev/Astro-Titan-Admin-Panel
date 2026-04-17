@@ -8,7 +8,7 @@ export function DashboardHeader() {
               Welcome back,{" "}
               <span className="font-bold text-yellow-600 dark:text-blue-400">
                 {/* {user?.name} */}
-                Rahul
+                Astro Titan
               </span>
             </h1>
             <div className="text-neutral-700 dark:text-gray-200 capitalize bg-green-100/50 w-fit px-2 py-1 rounded-lg text-xs">

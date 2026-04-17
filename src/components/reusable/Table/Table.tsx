@@ -1,305 +1,368 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// components/common/ReusableTable.tsx
-import React, { useState } from "react";
-import { HiDotsVertical, HiOutlineSearch } from "react-icons/hi";
-import { FiFilter } from "react-icons/fi";
+import React, { useEffect, useRef, useState } from "react";
+import NoData from "../NoData/NoData";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import LogoLoader from "../../shared/LogoLoader/LogoLoader";
 
-export interface Column<T = any> {
-  key: keyof T | string;
-  header: string;
-  render?: (item: T) => React.ReactNode;
-}
-
-export interface ActionMenu<T = any> {
-  label: string;
-  icon?: React.ReactNode;
-  onClick: (item: T) => void;
-  className?: string;
-}
-
-interface FilterOption {
+export type TableHead = {
   key: string;
   label: string;
-  options: { value: string; label: string }[];
-}
+  className?: string;
+};
 
-interface ReusableTableProps<T> {
-  columns: Column<T>[];
+export type TableAction<T> = {
+  label: any;
+  onClick: (row: T) => void;
+  icon?: React.ReactNode;
+};
+
+type Props<T extends Record<string, any>> = {
+  title?: string;
+  description?: string;
+  theads: TableHead[];
   data: T[];
-
-  page?: number;
+  actions?: TableAction<T>[];
+  onEditItem?: (row: any) => any;
+  onDeleteItem?: (row: any) => any;
+  totalPages?: number;
+  currentPage?: number;
   onPageChange?: (page: number) => void;
-
-  actions?: ActionMenu<T>[];
-
-  onLimitChange?: (limit: number) => void;
-  onSearch?: (searchTerm: string) => void;
-  onFilterChange?: (filters: Record<string, any>) => void;
-  filterOptions?: FilterOption[];
-  currentLimit?: number;
-  totalItems?: number;
   isLoading?: boolean;
+  onSearch?: (q: string) => void;
+  setAreaOptions?: React.Dispatch<React.SetStateAction<string[]>>;
+  limit: number;
+  setLimit: React.Dispatch<React.SetStateAction<number>>;
   children?: React.ReactNode;
-  placeholder?: string;
-}
+  className?: string;
+};
 
-const Table = <T extends Record<string, any>>({
-  columns,
+// Reusable Table component
+export default function Table<T extends Record<string, any>>({
+  title = "",
+  description = "",
+  theads,
   data,
-  // page = 1,
-  // onPageChange,
-  actions,
-  onLimitChange,
-  onSearch,
-  onFilterChange,
-  filterOptions,
-  currentLimit = 10,
-  totalItems = 0,
+  actions = [],
+  onEditItem,
+  onDeleteItem,
+  totalPages = 1,
+  currentPage = 1,
+  onPageChange,
   isLoading = false,
+  onSearch,
+  limit = 10,
+  setLimit,
   children,
-  placeholder,
-}: ReusableTableProps<T>) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
-  const [filters, setFilters] = useState<Record<string, any>>({});
-  const [showFilters, setShowFilters] = useState(false);
+  className = "",
+}: Props<T>) {
+  const [query, setQuery] = useState("");
+  const [openMenuId, setOpenMenuId] = useState<string | number | null>(null);
+  const [closingMenuId, setClosingMenuId] = useState<string | number | null>(
+    null,
+  );
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const totalPages = Math.ceil(totalItems / currentLimit);
-  console.log(totalPages);
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (!openMenuId) return;
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch?.(searchTerm);
+      const menu = menuRef.current;
+      if (!menu) return;
+
+      if (!menu.contains(e.target as Node)) {
+        setClosingMenuId(openMenuId);
+        setTimeout(() => {
+          setOpenMenuId(null);
+          setClosingMenuId(null);
+        }, 180);
+      }
+    }
+
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === "Escape" && openMenuId) {
+        setClosingMenuId(openMenuId);
+        setTimeout(() => {
+          setOpenMenuId(null);
+          setClosingMenuId(null);
+        }, 180);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [openMenuId]);
+
+  useEffect(() => {
+    if (!onSearch) return;
+    const t = setTimeout(() => onSearch(query), 300);
+    return () => clearTimeout(t);
+  }, [query, onSearch]);
+
+  const handleToggleMenu = (id: string | number) => {
+    if (openMenuId === id) {
+      // smooth close
+      setClosingMenuId(id);
+      setTimeout(() => {
+        setOpenMenuId(null);
+        setClosingMenuId(null);
+      }, 180);
+    } else {
+      setOpenMenuId(id);
+      setClosingMenuId(null);
+    }
   };
 
-  const handleFilterChange = (key: string, value: any) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFilterChange?.(newFilters);
+  const goToPage = (p: number) => {
+    if (!onPageChange) return;
+    const page = Math.max(1, Math.min(totalPages || 1, p));
+    onPageChange(page);
   };
 
-  const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onLimitChange?.(Number(e.target.value));
-  };
+  const limits = [5, 10, 15, 20, 25, 30, 50, 100, 200, 500, 1000];
 
   return (
-    <div className="w-full">
-      {/* Search and Filter Bar */}
-      <div className="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-        <form onSubmit={handleSearch} className="flex-1 max-w-md">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder={placeholder}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          </div>
-        </form>
-
-        <div className="flex items-center gap-3">
-          {/* Items per page */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Show:</span>
-            <select
-              value={currentLimit}
-              onChange={handleLimitChange}
-              className="border border-gray-300 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500"
-            >
-              {[5, 10, 25, 50, 100].map((limit) => (
-                <option key={limit} value={limit}>
-                  {limit}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {children}
-
-          {/* Filter button */}
-          {filterOptions && filterOptions.length > 0 && (
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
-            >
-              <FiFilter className="text-gray-600" />
-              <span className="text-sm">Filters</span>
-            </button>
+    <div
+      className={`w-full bg-white border border-gray-300 rounded-xl shadow-sm p-4 font-Inter ${className}`}
+    >
+      <div className="flex flex-col lg:flex-row items-start justify-between gap-4 mb-4">
+        <div>
+          {title && <h3 className="text-xl font-semibold">{title}</h3>}
+          {description && (
+            <p className="text-sm text-slate-500">{description}</p>
           )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {onSearch && (
+            <div>
+              <input
+                placeholder="Search..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="input input-sm px-3 py-2 border border-gray-300 focus:border-primary-10 transition duration-300 focus:outline-none rounded-md text-sm shadow-sm w-56"
+                aria-label="Search table"
+              />
+            </div>
+          )}
+
+          <select
+            value={limit}
+            onChange={(e) => setLimit(Number(e.target.value))}
+            className="input input-sm px-3 py-2 border border-gray-300 focus:border-primary-10 transition duration-300 focus:outline-none rounded-md text-sm shadow-sm cursor-pointer"
+          >
+            <option value="">Limit/Page</option>
+            {limits?.map((limit) => (
+              <option key={limit} value={limit}>
+                {limit}
+              </option>
+            ))}
+          </select>
+
+          {children && children}
         </div>
       </div>
 
-      {/* Filter Options */}
-      {showFilters && filterOptions && (
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {filterOptions.map((filter) => (
-            <div key={filter.key}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {filter.label}
-              </label>
-              <select
-                value={filters[filter.key] || ""}
-                onChange={(e) => handleFilterChange(filter.key, e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All</option>
-                {filter.options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
+      <div className="relative">
+        {/* Loader overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/80">
+            <LogoLoader />
+          </div>
+        )}
+
+        <div className="overflow-x-auto rounded-md min-h-75">
+          <table className="min-w-full table-auto border-collapse">
+            <thead className="sticky top-0 bg-white">
+              <tr>
+                {theads?.map((th) => (
+                  <th
+                    key={th.key}
+                    className={`p-3 text-left text-sm font-medium text-slate-600 ${
+                      th.className ?? ""
+                    } whitespace-nowrap border-b border-gray-500`}
+                  >
+                    {th.label}
+                  </th>
                 ))}
-              </select>
-            </div>
-          ))}
-        </div>
-      )}
+                {actions.length > 0 && (
+                  <th className="p-3 text-right text-sm font-medium text-slate-600 whitespace-nowrap border-b border-gray-300">
+                    Actions
+                  </th>
+                )}
+              </tr>
+            </thead>
 
-      {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              {columns.map((column) => (
-                <th
-                  key={column.key as string}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  {column.header}
-                </th>
-              ))}
-              {actions && actions.length > 0 && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+            <tbody className="bg-white">
+              {!isLoading && data.length === 0 && (
+                <tr>
+                  <td colSpan={theads.length + (actions.length ? 1 : 0)}>
+                    <NoData />
+                  </td>
+                </tr>
               )}
-            </tr>
-          </thead>
 
-          <tbody className="bg-white divide-y divide-gray-200">
-            {isLoading ? (
-              <tr>
-                <td
-                  colSpan={columns.length + 1}
-                  className="px-6 py-4 text-center text-gray-500"
-                >
-                  Loading...
-                </td>
-              </tr>
-            ) : data.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length + 1}
-                  className="px-6 py-4 text-center text-gray-500"
-                >
-                  No data found
-                </td>
-              </tr>
-            ) : (
-              data.map((item, index) => (
-                <tr key={item.id || index} className="hover:bg-gray-50">
-                  {columns.map((column) => (
-                    <td
-                      key={column.key as string}
-                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                    >
-                      {column.render
-                        ? column.render(item)
-                        : item[column.key as keyof T]}
-                    </td>
-                  ))}
+              {data?.map((row, idx) => {
+                const rowId = (row.id ?? row._id ?? idx) as string | number;
+                return (
+                  <tr
+                    key={rowId}
+                    className="hover:bg-slate-50/50 transition-colors"
+                  >
+                    {theads.map((th) => {
+                      const cellValue = row[th.key as keyof typeof row];
+                      return (
+                        <td
+                          key={String(th.key)}
+                          className="p-3 text-sm align-top whitespace-nowrap border-b border-gray-300 max-w-xs overflow-hidden text-ellipsis"
+                        >
+                          {React.isValidElement(cellValue)
+                            ? cellValue
+                            : String(cellValue ?? "")}
+                        </td>
+                      );
+                    })}
 
-                  {actions && actions.length > 0 && (
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-                      <button
-                        onClick={() =>
-                          setOpenDropdownId(
-                            openDropdownId === item.id
-                              ? null
-                              : (item.id as string),
-                          )
-                        }
-                        className="text-gray-600 hover:text-gray-900 cursor-pointer"
-                      >
-                        <HiDotsVertical className="h-5 w-5" />
-                      </button>
+                    <td className="p-3 text-sm border-b border-gray-300 relative text-right">
+                      <div className="inline-block relative">
+                        <button
+                          onClick={() => handleToggleMenu(rowId)}
+                          className="cursor-pointer"
+                          aria-expanded={openMenuId === rowId}
+                          aria-controls={`menu-${rowId}`}
+                        >
+                         <MoreVertical />
+                        </button>
 
-                      {openDropdownId === item.id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                        {/* Dropdown - keep mounted for smooth transitions */}
+                        <div
+                          ref={openMenuId === rowId ? menuRef : null}
+                          id={`menu-${rowId}`}
+                          role="menu"
+                          className={
+                            `bg-white origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg transform transition-all duration-150 ease-out z-30 ` +
+                            (openMenuId === rowId && closingMenuId !== rowId
+                              ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
+                              : openMenuId === rowId && closingMenuId === rowId
+                                ? "opacity-0 scale-95 -translate-y-1 pointer-events-none"
+                                : "opacity-0 scale-95 -translate-y-1 pointer-events-none")
+                          }
+                        >
                           <div className="py-1">
-                            {actions.map((action, idx) => (
+                            {onEditItem && (
                               <button
-                                key={idx}
                                 onClick={() => {
-                                  action.onClick(item);
-                                  setOpenDropdownId(null);
+                                  onEditItem!(row);
+                                  setClosingMenuId(rowId);
+                                  setTimeout(() => {
+                                    setOpenMenuId(null);
+                                    setClosingMenuId(null);
+                                  }, 180);
                                 }}
-                                className={`flex items-center gap-2 px-4 py-2 text-sm w-full text-left hover:bg-gray-100 cursor-pointer ${
-                                  action.className || "text-gray-700"
-                                }`}
+                                className="w-full text-left px-3 py-2 text-sm hover:bg-slate-100 cursor-pointer flex items-center gap-1"
                               >
-                                {action.icon}
-                                {action.label}
+                                <Pencil className="inline mr-2 size-4" />
+                                Edit
+                              </button>
+                            )}
+                            {onDeleteItem && (
+                              <button
+                                onClick={() => {
+                                  onDeleteItem!(row);
+                                  setClosingMenuId(rowId);
+                                  setTimeout(() => {
+                                    setOpenMenuId(null);
+                                    setClosingMenuId(null);
+                                  }, 180);
+                                }}
+                                className="w-full text-left px-3 py-2 text-sm hover:bg-slate-100 cursor-pointer flex items-center gap-1"
+                              >
+                                <Trash2 className="inline mr-2 size-4" />
+                                Delete
+                              </button>
+                            )}
+                            {actions.map((act, i) => (
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  act.onClick(row);
+                                  setClosingMenuId(rowId);
+                                  setTimeout(() => {
+                                    setOpenMenuId(null);
+                                    setClosingMenuId(null);
+                                  }, 180);
+                                }}
+                                className="w-full text-left px-3 py-2 text-sm hover:bg-slate-100 cursor-pointer flex items-center gap-1"
+                              >
+                                {act.icon && <p>{act.icon}</p>}
+                                {act.label}
                               </button>
                             ))}
                           </div>
                         </div>
-                      )}
+                      </div>
                     </td>
-                  )}
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Pagination */}
-      {/* {totalItems > 0 && totalPages > 1 && (
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-gray-600">
-            Showing {(page - 1) * currentLimit + 1} to{" "}
-            {Math.min(page * currentLimit, totalItems)} of {totalItems} items
-          </div>
+      <div className="mt-3 flex justify-end items-center gap-2">
+        <div className="flex items-center gap-2 text-xs lg:text-sm">
+          {/* Prev Button */}
+          <button
+            onClick={() => goToPage((currentPage || 1) - 1)}
+            disabled={currentPage <= 1}
+            className={`px-3 py-1 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed 
+        ${currentPage > 1 ? "cursor-pointer bg-primary-10 text-white" : ""}`}
+          >
+            Prev
+          </button>
 
-          <div className="flex items-center gap-2">
-            <button
-              disabled={page === 1}
-              onClick={() => onPageChange?.(page - 1)}
-              className="px-3 py-1 border rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              Previous
-            </button>
+          {/* Page Numbers */}
+          {totalPages <= 5 ? (
+            Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => goToPage(page)}
+                className={`px-3 py-1 rounded-md border border-gray-300 
+        ${
+          currentPage === page
+            ? "bg-primary-10 text-white"
+            : "hover:bg-primary-10 hover:text-white cursor-pointer"
+        }`}
+              >
+                {page}
+              </button>
+            ))
+          ) : (
+            <span className="px-3 py-1 rounded-md border border-gray-300">
+              {currentPage} of {totalPages}
+            </span>
+          )}
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-              (pageNumber) => (
-                <button
-                  key={pageNumber}
-                  onClick={() => onPageChange?.(pageNumber)}
-                  className={`px-3 py-1 rounded-md text-sm border ${
-                    page === pageNumber
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "hover:bg-gray-50"
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-              ),
-            )}
-
-            <button
-              disabled={page === totalPages}
-              onClick={() => onPageChange?.(page + 1)}
-              className="px-3 py-1 border rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 cursor-pointer"
-            >
-              Next
-            </button>
-          </div>
+          {/* Next Button */}
+          <button
+            onClick={() => goToPage((currentPage || 1) + 1)}
+            disabled={currentPage >= (totalPages || 1)}
+            className={`px-3 py-1 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed 
+        ${
+          currentPage < totalPages
+            ? "cursor-pointer bg-primary-10 text-white"
+            : ""
+        }`}
+          >
+            Next
+          </button>
         </div>
-      )} */}
+      </div>
     </div>
   );
-};
-
-export default Table;
+}

@@ -1,205 +1,220 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import Table from "../../components/reusable/Table/Table";
-import { useNavigate } from "react-router-dom";
+import Table, { type TableAction } from "../../components/reusable/Table/Table";
+import { useGetAllAstrologersQuery } from "../../redux/Features/Astrologer/astrologerApi";
+import { FiEye, FiSlash } from "react-icons/fi";
+import { HiOutlineUserCircle } from "react-icons/hi";
+import SuspendUserModal from "../../components/SuspendUserModal/SuspendUserModal";
+import { useActiveAccountMutation } from "../../redux/Features/Account/accountApi";
+import toast from "react-hot-toast";
 
 const AstrologerManagement = () => {
-  const navigate = useNavigate();
-  const [filters, setFilters] = useState({
-    page: 1,
-    perPage: 10,
-    name: "",
-    email: "",
-    phoneNumber: "",
-    expertise: "",
-    experience: "",
-    status: "",
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const skip = (page - 1) * limit;
+  const [keyword, setKeyword] = useState<string>("");
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
+    null,
+  );
+  const [isSuspendAccountModalOpen, setIsSuspendAccountModalOpen] =
+    useState<boolean>(false);
+
+  const [activeAccount] = useActiveAccountMutation();
+  const { data, isLoading, isFetching } = useGetAllAstrologersQuery({
+    skip,
+    page,
+    limit,
+    keyword,
   });
 
-  const columns: any = [
-    {
-      key: "name",
-      header: "Name",
-      render: (item: any) => (
-        <div className="font-medium text-gray-900">
-          {item.firstName} {item.lastName}
+  const astrologerTheads: any[] = [
+    { key: "sl", label: "SL" },
+    { key: "profilePicture", label: "Profile" },
+    { key: "displayName", label: "Name" },
+    { key: "email", label: "Email" },
+    { key: "phoneNumber", label: "Phone Number" },
+    { key: "experience", label: "Experience" },
+    { key: "areaOfPractice", label: "Area of Practice" },
+    { key: "consultLanguages", label: "Languages" },
+    { key: "identityStatus", label: "Identity Status" },
+    { key: "accountStatus", label: "Account Status" },
+  ];
+
+  const astrologers = data?.data?.astrologers || [];
+
+  const astrologerTableData = astrologers?.map(
+    (astrologer: any, index: number) => ({
+      _id: astrologer._id,
+      userId: astrologer.accountDetails._id,
+
+      sl: index + 1,
+
+      profilePicture: (
+        <img
+          src={astrologer?.profilePicture}
+          alt={astrologer?.displayName}
+          className="w-12 h-12 rounded-full object-cover"
+        />
+      ),
+
+      displayName: (
+        <div className="font-medium">
+          <p>{astrologer?.displayName}</p>
+          <p className="text-xs text-gray-500">
+            {astrologer?.firstName} {astrologer?.lastName}
+          </p>
         </div>
       ),
-    },
-    {
-      key: "email",
-      header: "Email",
-      render: (item: any) => (
-        <div>{item.email && item.email.length > 0 ? item.email[0] : "-"}</div>
+
+      email: (
+        <p className="text-sm text-gray-700">
+          {astrologer?.accountDetails?.email || astrologer?.email || "N/A"}
+        </p>
       ),
-    },
-    {
-      key: "phoneNumber",
-      header: "Phone",
-      render: (item: any) => (
-        <div>
-          {item.phoneNumber &&
-          item.phoneNumber.length > 0 &&
-          item.phoneNumber[0]
-            ? item.phoneNumber[0]
-            : "-"}
+
+      phoneNumber: (
+        <p className="text-sm text-gray-700">
+          {astrologer?.phoneNumber ||
+            astrologer?.accountDetails?.phoneNumber ||
+            "N/A"}
+        </p>
+      ),
+
+      experience: (
+        <p className="text-sm text-gray-700">
+          {astrologer?.experience || "N/A"}
+        </p>
+      ),
+
+      areaOfPractice: (
+        <div className="flex flex-wrap gap-1">
+          {astrologer?.areaOfPractice
+            ?.slice(0, 2)
+            ?.map((area: string, idx: number) => (
+              <span
+                key={idx}
+                className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+              >
+                {area}
+              </span>
+            ))}
+          {astrologer?.areaOfPractice?.length > 2 && (
+            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+              +{astrologer.areaOfPractice.length - 2}
+            </span>
+          )}
         </div>
       ),
-    },
-    {
-      key: "expertise",
-      header: "Expertise",
-    },
-    {
-      key: "experience",
-      header: "Experience",
-      render: (item: any) => <div>{item.experience} yrs</div>,
-    },
-    {
-      key: "city",
-      header: "City",
-    },
-    {
-      key: "country",
-      header: "Country",
-    },
-    {
-      key: "status",
-      header: "Status",
-      render: (item: any) => (
+
+      consultLanguages: (
+        <div className="flex flex-wrap gap-1">
+          {astrologer?.consultLanguages?.map((lang: string, idx: number) => (
+            <span
+              key={idx}
+              className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
+            >
+              {lang}
+            </span>
+          ))}
+        </div>
+      ),
+
+      identityStatus: (
         <span
-          className={`px-2 py-1 text-xs rounded-full ${
-            item.status === "ACTIVE"
-              ? "bg-green-100 text-green-800"
-              : item.status === "PENDING"
-              ? "bg-yellow-100 text-yellow-800"
-              : "bg-red-100 text-red-800"
+          className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
+            astrologer?.identity?.status === "approved"
+              ? "bg-green-100 text-green-700"
+              : astrologer?.identity?.status === "pending"
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-red-100 text-red-700"
           }`}
         >
-          {item.status}
+          {astrologer?.identity?.status || "N/A"}
         </span>
       ),
+
+      accountStatus: (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
+            astrologer?.accountDetails?.isSuspended
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+          }`}
+        >
+          {astrologer?.accountDetails?.isSuspended ? "Suspended" : "Active"}
+        </span>
+      ),
+    }),
+  );
+
+  const handleSearch = (k: string) => {
+    setKeyword(k);
+  };
+
+  // Action Menu
+  const actions: TableAction<any>[] = [
+    {
+      label: "View Profile",
+      icon: <FiEye className="inline mr-2" />,
+      onClick: (row) => {
+        const url = `/dashboard/astrologer/${row?.userId}`;
+        window.open(url, "_blank");
+      },
     },
     {
-      key: "actions",
-      header: "Actions",
-      render: (item: any) => (
-        <button
-         onClick={() => navigate(`/dashboard/astrologer/${item.id}`)}
-          className="px-3 py-1 text-sm bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition cursor-pointer"
-        >
-          View Details
-        </button>
-      ),
+      label: "Suspend Account",
+      icon: <FiSlash className="inline mr-2" />,
+      onClick: (row) => {
+        console.log(row);
+        setSelectedAccountId(row?.userId);
+        setIsSuspendAccountModalOpen(true);
+      },
+    },
+    {
+      label: "Active Account",
+      icon: <HiOutlineUserCircle className="inline mr-2" />,
+      onClick: (row) => {
+        handleActiveAccount(row?.userId);
+      },
     },
   ];
 
-  const handleSearch = (searchTerm: string) => {
-    // Handle search logic
-  };
-
-  const handleFilterChange = () => {
-    // Handle filter change logic
-  };
-
-  const handleLimitChange = (limit: number) => {
-    // Handle limit logic
-  };
-
-  const isLoading = false;
-
-  const data = {
-    data: {
-      total: 5,
-      items: [
-        {
-          id: "1",
-          firstName: "Rajesh",
-          lastName: "Verma",
-          email: ["rajesh.astro@example.com"],
-          phoneNumber: ["9876501234"],
-          expertise: "Vedic Astrology",
-          experience: 10,
-          city: "Varanasi",
-          country: "India",
-          status: "ACTIVE",
-        },
-        {
-          id: "2",
-          firstName: "Ananya",
-          lastName: "Sen",
-          email: ["ananya.sen@example.com"],
-          phoneNumber: ["9123409876"],
-          expertise: "Tarot Reading",
-          experience: 6,
-          city: "Kolkata",
-          country: "India",
-          status: "PENDING",
-        },
-        {
-          id: "3",
-          firstName: "Michael",
-          lastName: "Smith",
-          email: ["michael.astro@example.com"],
-          phoneNumber: ["9988771122"],
-          expertise: "Numerology",
-          experience: 8,
-          city: "Los Angeles",
-          country: "USA",
-          status: "ACTIVE",
-        },
-        {
-          id: "4",
-          firstName: "Sara",
-          lastName: "Williams",
-          email: ["sara.w@example.com"],
-          phoneNumber: ["9011223344"],
-          expertise: "Palmistry",
-          experience: 5,
-          city: "London",
-          country: "UK",
-          status: "BLOCKED",
-        },
-        {
-          id: "5",
-          firstName: "Arjun",
-          lastName: "Kapoor",
-          email: ["arjun.k@example.com"],
-          phoneNumber: ["8899112233"],
-          expertise: "KP Astrology",
-          experience: 12,
-          city: "Delhi",
-          country: "India",
-          status: "ACTIVE",
-        },
-      ],
-    },
+  const handleActiveAccount = async (id: string) => {
+    try {
+      await toast.promise(activeAccount(id).unwrap(), {
+        loading: "Loading...",
+        success: "Account re-activated successfully!",
+        error: "Failed to reactivate. Please try again.",
+      });
+    } catch (err: any) {
+      toast.error(
+        err?.data?.message || "Failed to reactivate. Please try again.",
+      );
+    }
   };
 
   return (
     <div>
-      <div className="">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
-            All Astrologers
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Manage and view all astrologers in the system
-          </p>
-        </div>
+      <Table<any>
+        title={`Astrologers (${astrologerTableData?.length || 0})`}
+        description="Manage all astrologers in the system"
+        theads={astrologerTheads}
+        data={astrologerTableData || []}
+        actions={actions}
+        totalPages={data?.data?.meta?.totalPages || 1}
+        currentPage={page}
+        onPageChange={(p) => setPage(p)}
+        isLoading={isLoading || isFetching}
+        onSearch={handleSearch}
+        limit={limit}
+        setLimit={setLimit}
+      />
 
-        <Table
-          columns={columns}
-          data={data?.data?.items || []}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-          onLimitChange={handleLimitChange}
-          currentLimit={filters.perPage}
-          totalItems={data?.data?.total}
-          isLoading={isLoading}
-          placeholder="Search by name, email, or expertise..."
-        />
-      </div>
+      <SuspendUserModal
+        selectedAccountId={selectedAccountId}
+        isSuspendAccountModalOpen={isSuspendAccountModalOpen}
+        setIsSuspendAccountModalOpen={setIsSuspendAccountModalOpen}
+      />
     </div>
   );
 };

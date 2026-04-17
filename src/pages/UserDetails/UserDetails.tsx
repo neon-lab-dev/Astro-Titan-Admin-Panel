@@ -27,7 +27,7 @@ const UserDetails: React.FC = () => {
     country: "USA",
     state: "Louisiana",
     address: "123 Bayou Street, Apt 4B",
-    profilePicture: "https://via.placeholder.com/150"
+    profilePicture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXLb3TY72rHh4VSJUR8UGa83p3ABg3FRBNrw&s"
   };
 
   const handleGoBack = () => {

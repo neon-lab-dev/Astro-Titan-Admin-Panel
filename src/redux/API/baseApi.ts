@@ -8,8 +8,8 @@ import type { RootState } from "../store";
 import type { BaseQueryApi, BaseQueryFn, FetchArgs } from "@reduxjs/toolkit/query";
 import type { DefinitionType } from "@reduxjs/toolkit/query";
 
-export const baseUrl = "https://astro-titan-app-server.onrender.com";
-// export const baseUrl = "http://localhost:5000";
+// export const baseUrl = "https://astrotitan-server.onrender.com";
+export const baseUrl = "http://localhost:5000";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${baseUrl}/api/v1`,
@@ -54,37 +54,9 @@ export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
   tagTypes: [
-    "messages",
-    "users",
-    "reels",
-    "yoga",
-    "vastu",
-    "vastuTips",
-    "temple",
-    "organization",
-    "news",
-    "notification",
-    "popup",
-    "religiousTexts",
-    "books",
-    "texts",
-    "reportMantra",
-    "category",
-    "consultancyService",
-    "apiKeys",
-    "course",
-    "recipe",
-    "content",
-    "donations",
-    "donation",
-    "quiz",
-    "ayurveda",
-    "product",
-    "productBanner",
-    "consultation",
-    "bulkSms",
-    "dailyHoroscope",
-    "subscription",
+    "account",
+    "astrologer",
+    "user"
   ],
   endpoints: () => ({}),
 });
