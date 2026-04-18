@@ -173,7 +173,6 @@ const AstrologerManagement = () => {
       label: "Suspend Account",
       icon: <FiSlash className="inline mr-2" />,
       onClick: (row) => {
-        console.log(row);
         setSelectedAccountId(row?.userId);
         setIsSuspendAccountModalOpen(true);
       },

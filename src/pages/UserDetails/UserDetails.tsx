@@ -1,123 +1,338 @@
-import React, { useState } from 'react';
-import { IoArrowBack } from 'react-icons/io5';
-
-interface UserData {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  bayouUserStatus: string;
-  nickname: string;
-  city: string;
-  country: string;
-  state: string;
-  address: string;
-  profilePicture: string;
-}
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from "react";
+import { IoArrowBack, IoMailOutline } from "react-icons/io5";
+import {
+  FaPhone,
+  FaClock,
+  FaMapMarkerAlt,
+  FaUserCircle,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaExclamationTriangle,
+  FaVenusMars,
+  FaGlobe,
+} from "react-icons/fa";
+import { MdOutlineDateRange } from "react-icons/md";
+import { useGetSingleUserByIdQuery } from "../../redux/Features/User/userApi";
+import { useParams } from "react-router-dom";
+import { useActiveAccountMutation } from "../../redux/Features/Account/accountApi";
+import toast from "react-hot-toast";
+import SuspendUserModal from "../../components/SuspendUserModal/SuspendUserModal";
+import Button from "../../components/reusable/Button/Button";
 
 const UserDetails: React.FC = () => {
-  const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const { id } = useParams();
+  const { data } = useGetSingleUserByIdQuery(id);
+  const [activeAccount] = useActiveAccountMutation();
+  const [isSuspendAccountModalOpen, setIsSuspendAccountModalOpen] =
+    useState<boolean>(false);
 
-  const userData: UserData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phoneNumber: "+1 (555) 123-4567",
-    bayouUserStatus: "Premium Member",
-    nickname: "Johnny",
-    city: "New Orleans",
-    country: "USA",
-    state: "Louisiana",
-    address: "123 Bayou Street, Apt 4B",
-    profilePicture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXLb3TY72rHh4VSJUR8UGa83p3ABg3FRBNrw&s"
-  };
+  const userData = data?.data || {};
+  const isSuspended = userData?.accountId?.isSuspended || false;
 
   const handleGoBack = () => {
     window.history.back();
   };
 
+  const handleWithdrawSuspension = async (id: string) => {
+    try {
+      await toast.promise(activeAccount(id).unwrap(), {
+        loading: "Loading...",
+        success: "Account re-activated successfully!",
+        error: "Failed to reactivate. Please try again.",
+      });
+    } catch (err: any) {
+      toast.error(
+        err?.data?.message || "Failed to reactivate. Please try again.",
+      );
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-sm w-full max-w-3xl p-6">
-        {/* Header with Go Back Button */}
-        <div className="flex items-center justify-between mb-10">
-          <button
-            onClick={handleGoBack}
-            className="flex items-center gap-2 text-gray-600 hover:text-yellow-600 transition-colors group"
-          >
-            <IoArrowBack className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-medium">Go Back</span>
-          </button>
-          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-            isBlocked ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'
-          }`}>
-            {isBlocked ? 'Blocked' : 'Active'}
-          </div>
-        </div>
-
-        {/* Profile Header */}
-        <div className="flex items-center gap-4 pb-6 border-b border-gray-100">
-          <img 
-            src={userData.profilePicture} 
-            alt={userData.name}
-            className="w-16 h-16 rounded-full object-cover border-2 border-yellow-600"
-          />
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">{userData.name}</h1>
-            <p className="text-sm text-gray-500">{userData.bayouUserStatus}</p>
-          </div>
-        </div>
-
-        {/* User Details Grid */}
-        <div className="flex flex-col gap-7 py-6">
-          {/* Left Column */}
-          <div className="space-y-3">
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Email</p>
-              <p className="text-sm text-gray-900">{userData.email}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Phone</p>
-              <p className="text-sm text-gray-900">{userData.phoneNumber}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Nickname</p>
-              <p className="text-sm text-gray-900">{userData.nickname}</p>
-            </div>
+    <>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header with Back Button */}
+          <div className="mb-6">
+            <button
+              onClick={handleGoBack}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <IoArrowBack className="w-4 h-4" />
+              <span className="text-sm font-medium">Back to Users</span>
+            </button>
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-3">
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Address</p>
-              <p className="text-sm text-gray-900">{userData.address}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">City, State</p>
-              <p className="text-sm text-gray-900">{userData.city}, {userData.state}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Country</p>
-              <p className="text-sm text-gray-900">{userData.country}</p>
+          {/* Profile Header Card */}
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+            <div className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex gap-5">
+                  {/* Profile Picture */}
+                  <div className="shrink-0">
+                    {userData?.profilePicture ? (
+                      <img
+                        src={userData.profilePicture}
+                        alt={`${userData?.firstName} ${userData?.lastName}`}
+                        className="w-20 h-20 rounded-full object-cover border border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
+                        <FaUserCircle className="w-12 h-12 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* User Info */}
+                  <div>
+                    <div className="flex items-center gap-3 flex-wrap mb-1">
+                      <h1 className="text-2xl font-semibold text-gray-900">
+                        {userData?.firstName} {userData?.lastName}
+                      </h1>
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          isSuspended
+                            ? "bg-red-50 text-red-700"
+                            : "bg-green-50 text-green-700"
+                        }`}
+                      >
+                        {isSuspended ? (
+                          <FaTimesCircle className="w-3 h-3" />
+                        ) : (
+                          <FaCheckCircle className="w-3 h-3" />
+                        )}
+                        {isSuspended ? "Suspended" : "Active"}
+                      </span>
+                      {userData?.isProfileCompleted && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs">
+                          <FaCheckCircle className="w-3 h-3" />
+                          Profile Completed
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500 capitalize">
+                      {userData?.gender === "male" ? "Male" : "Female"} • Member
+                      since {formatDate(userData?.createdAt)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <div>
+                  {!isSuspended ? (
+                    <Button
+                      onClick={() => setIsSuspendAccountModalOpen(true)}
+                      label="Suspend Account"
+                    />
+                  ) : (
+                    <Button
+                      onClick={() =>
+                        handleWithdrawSuspension(userData?.accountId?._id)
+                      }
+                      label="Withdraw Suspension"
+                    />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 pt-6 border-t border-gray-100">
-          <button
-            onClick={() => setIsBlocked(true)}
-            className="flex-1 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
-          >
-            Block
-          </button>
-          <button
-            onClick={() => setIsBlocked(false)}
-            className="flex-1 px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-md hover:bg-yellow-700 transition-colors"
-          >
-            Unblock
-          </button>
+          {/* Suspension Alert */}
+          {isSuspended && userData?.accountId?.suspensionReason && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <div className="flex gap-3">
+                <FaExclamationTriangle className="w-5 h-5 text-red-600 shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-red-800">
+                    Account Suspended
+                  </p>
+                  <p className="text-sm text-red-700 mt-1">
+                    Reason: {userData.accountId.suspensionReason}
+                  </p>
+                  {userData.accountId.updatedAt && (
+                    <p className="text-xs text-red-600 mt-1">
+                      Suspended on: {formatDate(userData.accountId.updatedAt)}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Main Info */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Contact Information */}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <h2 className="text-base font-semibold text-gray-900 mb-4">
+                  Contact Information
+                </h2>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <IoMailOutline className="w-4 h-4 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-gray-500">Email Address</p>
+                      <p className="text-sm text-gray-900">
+                        {userData?.accountId?.email || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <FaPhone className="w-4 h-4 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-gray-500">Phone Number</p>
+                      <p className="text-sm text-gray-900">
+                        {userData?.phoneNumber ||
+                          userData?.accountId?.phoneNumber ||
+                          "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Birth Details */}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <h2 className="text-base font-semibold text-gray-900 mb-4">
+                  Birth Details
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-500 flex items-center gap-1 mb-1">
+                      <MdOutlineDateRange className="w-3 h-3" />
+                      Date of Birth
+                    </p>
+                    <p className="text-sm text-gray-900">
+                      {formatDate(userData?.dateOfBirth)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 flex items-center gap-1 mb-1">
+                      <FaClock className="w-3 h-3" />
+                      Time of Birth
+                    </p>
+                    <p className="text-sm text-gray-900">
+                      {userData?.timeOfBirth || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 flex items-center gap-1 mb-1">
+                      <FaMapMarkerAlt className="w-3 h-3" />
+                      Place of Birth
+                    </p>
+                    <p className="text-sm text-gray-900">
+                      {userData?.placeOfBirth || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Interests */}
+              {userData?.intents && userData.intents.length > 0 && (
+                <div className="bg-white rounded-xl border border-gray-200 p-6">
+                  <h2 className="text-base font-semibold text-gray-900 mb-4">
+                    Interests & Intentions
+                  </h2>
+                  <div className="flex flex-wrap gap-2">
+                    {userData.intents.map((intent: string, index: number) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm"
+                      >
+                        {intent}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column - Sidebar Info */}
+            <div className="space-y-6">
+              {/* Basic Info */}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <h2 className="text-base font-semibold text-gray-900 mb-4">
+                  Basic Information
+                </h2>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <FaUserCircle className="w-4 h-4 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-gray-500">Full Name</p>
+                      <p className="text-sm text-gray-900">
+                        {userData?.firstName} {userData?.lastName}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <FaVenusMars className="w-4 h-4 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-gray-500">Gender</p>
+                      <p className="text-sm text-gray-900 capitalize">
+                        {userData?.gender || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <FaGlobe className="w-4 h-4 text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-gray-500">Country</p>
+                      <p className="text-sm text-gray-900">
+                        {userData?.country || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Account Info */}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <h2 className="text-base font-semibold text-gray-900 mb-4">
+                  Account Information
+                </h2>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-gray-500">Account Created</p>
+                    <p className="text-sm text-gray-900">
+                      {formatDate(userData?.createdAt)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Last Updated</p>
+                    <p className="text-sm text-gray-900">
+                      {formatDate(userData?.updatedAt)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Account Role</p>
+                    <p className="text-sm text-gray-900 capitalize">
+                      {userData?.accountId?.role || "User"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Suspend Modal */}
+      <SuspendUserModal
+        selectedAccountId={userData?.accountId?._id as string}
+        isSuspendAccountModalOpen={isSuspendAccountModalOpen}
+        setIsSuspendAccountModalOpen={setIsSuspendAccountModalOpen}
+      />
+    </>
   );
 };
 
