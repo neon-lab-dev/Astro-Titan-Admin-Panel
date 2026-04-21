@@ -45,6 +45,8 @@ const UserManagement = () => {
     { key: "accountStatus", label: "Account Status" },
   ];
 
+  console.log(data);
+
   const users = data?.data?.users || [];
 
   const userTableData = users?.map((user: any, index: number) => ({

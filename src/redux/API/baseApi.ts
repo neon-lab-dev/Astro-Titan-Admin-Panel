@@ -32,7 +32,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
-    const res = await fetch(`${baseUrl}/api/v1/auth/refresh-token`, {
+    const res = await fetch(`${baseUrl}/api/v1/account/refresh-token`, {
       credentials: "include",
     });
 
@@ -56,7 +56,10 @@ export const baseApi = createApi({
   tagTypes: [
     "account",
     "astrologer",
-    "user"
+    "user",
+    "product",
+    "puja",
+    "category",
   ],
   endpoints: () => ({}),
 });

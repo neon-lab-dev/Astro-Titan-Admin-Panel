@@ -2,9 +2,11 @@ import {
   LayoutDashboard,
   Users,
   Star,
-  CreditCard,
-  FileText,
+  // CreditCard,
+  // FileText,
   LogOut,
+  ShoppingBag,
+  Flower2,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -33,15 +35,25 @@ export function Sidebar() {
       icon: Star,
     },
     {
-      label: "Transactions & Payments",
-      path: "/dashboard/transactions-payments",
-      icon: CreditCard,
+      label: "Products",
+      path: "/dashboard/products",
+      icon: ShoppingBag,
     },
     {
-      label: "Subscription Plan",
-      path: "/dashboard/subscription-plan",
-      icon: FileText,
+      label : "Puja",
+      path : "/dashboard/puja",
+      icon : Flower2
     },
+    // {
+    //   label: "Transactions & Payments",
+    //   path: "/dashboard/transactions-payments",
+    //   icon: CreditCard,
+    // },
+    // {
+    //   label: "Subscription Plan",
+    //   path: "/dashboard/subscription-plan",
+    //   icon: FileText,
+    // },
   ];
 
   const handleLogout = async () => {

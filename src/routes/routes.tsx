@@ -11,6 +11,10 @@ import TransactionsAndPayments from "../pages/TransactionsAndPayments/Transactio
 import SubscriptionPlan from "../pages/SubscriptionPlan/SubscriptionPlan";
 import UserDetails from "../pages/UserDetails/UserDetails";
 import AstrologerDetails from "../pages/AstrologerDetails/AstrologerDetails";
+import Products from "../pages/Products/Products";
+import Puja from "../pages/Puja/Puja";
+import PujaDetails from "../pages/Puja/PujaDetails";
+import ProductDetails from "../pages/Products/ProductDetails";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +50,22 @@ export const router = createBrowserRouter([
       {
         path: "astrologer/:id",
         element: <AstrologerDetails />,
+      },
+      {
+        path: "products",
+        element: <Products />,
+      },
+      {
+        path: "product/:id",
+        element: <ProductDetails />,
+      },
+      {
+        path: "puja",
+        element: <Puja />,
+      },
+      {
+        path: "puja/:id",
+        element: <PujaDetails />,
       },
       {
         path: "transactions-payments",
