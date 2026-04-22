@@ -19,10 +19,11 @@ import { useActiveAccountMutation } from "../../redux/Features/Account/accountAp
 import toast from "react-hot-toast";
 import SuspendUserModal from "../../components/SuspendUserModal/SuspendUserModal";
 import Button from "../../components/reusable/Button/Button";
+import LogoLoader from "../../components/shared/LogoLoader/LogoLoader";
 
 const UserDetails: React.FC = () => {
   const { id } = useParams();
-  const { data } = useGetSingleUserByIdQuery(id);
+  const { data, isLoading } = useGetSingleUserByIdQuery(id);
   const [activeAccount] = useActiveAccountMutation();
   const [isSuspendAccountModalOpen, setIsSuspendAccountModalOpen] =
     useState<boolean>(false);
@@ -56,6 +57,14 @@ const UserDetails: React.FC = () => {
       day: "numeric",
     });
   };
+
+  if (isLoading) {
+      return (
+        <div className="h-[80vh] flex items-center justify-center">
+          <LogoLoader />
+        </div>
+      );
+    }
 
   return (
     <>
@@ -96,7 +105,7 @@ const UserDetails: React.FC = () => {
                   <div>
                     <div className="flex items-center gap-3 flex-wrap mb-1">
                       <h1 className="text-2xl font-semibold text-gray-900">
-                        {userData?.firstName} {userData?.lastName}
+                        {userData?.firstName || "N/A"} {userData?.lastName}
                       </h1>
                       <span
                         className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${

@@ -68,7 +68,7 @@ const UserManagement = () => {
     fullName: (
       <div className="font-medium">
         <Link to={`/dashboard/user/${user?._id}`} className="hover:underline">
-          {user?.firstName} {user?.lastName}
+          {user?.firstName || "N/A"} {user?.lastName}
         </Link>
         <p className="text-xs text-gray-500">
           {user?.gender === "male" ? "Male" : "Female"}

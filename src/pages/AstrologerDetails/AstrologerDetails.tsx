@@ -15,7 +15,10 @@ import {
   FaClock,
 } from "react-icons/fa";
 import { MdLocalPhone, MdVerified } from "react-icons/md";
-import { useGetSingleAstrologerQuery } from "../../redux/Features/Astrologer/astrologerApi";
+import {
+  useGetSingleAstrologerQuery,
+  useUpdateIdentityStatusMutation,
+} from "../../redux/Features/Astrologer/astrologerApi";
 import { useParams } from "react-router-dom";
 import { IMAGES } from "../../assets";
 import Button from "../../components/reusable/Button/Button";
@@ -23,13 +26,18 @@ import SuspendUserModal from "../../components/SuspendUserModal/SuspendUserModal
 import { useActiveAccountMutation } from "../../redux/Features/Account/accountApi";
 import toast from "react-hot-toast";
 import LogoLoader from "../../components/shared/LogoLoader/LogoLoader";
+import RejectIdentityStatus from "../../components/AstrologerPage/RejectIdentityStatus/RejectIdentityStatus";
 
 const AstrologerDetails: React.FC = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState<"about" | "reviews">("about");
   const { data, isLoading } = useGetSingleAstrologerQuery(id);
   const [activeAccount] = useActiveAccountMutation();
+  const [updateIdentityStatus, { isLoading: isUpdatingIdentityStatus }] =
+    useUpdateIdentityStatusMutation();
   const [isSuspendAccountModalOpen, setIsSuspendAccountModalOpen] =
+    useState<boolean>(false);
+  const [isRejectIdentityModalOpen, setIsRejectIdentityModalOpen] =
     useState<boolean>(false);
 
   const astrologerData = data?.data || {};
@@ -113,7 +121,7 @@ const AstrologerDetails: React.FC = () => {
   };
 
   const averageRating = 4.7;
-  const totalReviews = 128;
+  const totalReviews = 3;
 
   const handleWithdrawSuspension = async (id: string) => {
     try {
@@ -126,6 +134,24 @@ const AstrologerDetails: React.FC = () => {
       toast.error(
         err?.data?.message || "Failed to reactivate. Please try again.",
       );
+    }
+  };
+
+  const handleApproveIdentityStatus = async () => {
+    try {
+      const payload = {
+        status: "approved",
+      };
+      const response = await updateIdentityStatus({
+        id,
+        data: payload,
+      }).unwrap();
+      if (response.success) {
+        toast.success(response.message || "Identity rejected successfully");
+        setIsSuspendAccountModalOpen(false);
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to reject user identity");
     }
   };
 
@@ -283,15 +309,19 @@ const AstrologerDetails: React.FC = () => {
 
                   {!astrologerData?.isIdentityVerified && (
                     <Button
-                      // onClick={() => setIsApproveIdentityModalOpen(true)}
-                      label="Approve Identity"
+                      onClick={handleApproveIdentityStatus}
+                      label={
+                        isUpdatingIdentityStatus
+                          ? "Please wait..."
+                          : "Approve Identity"
+                      }
                       variant="primary"
                     />
                   )}
 
                   {astrologerData?.identity?.status === "pending" && (
                     <Button
-                      // onClick={() => setIsRejectIdentityModalOpen(true)}
+                      onClick={() => setIsRejectIdentityModalOpen(true)}
                       label="Reject Identity"
                       variant="secondary"
                     />
@@ -584,9 +614,15 @@ const AstrologerDetails: React.FC = () => {
       </div>
 
       <SuspendUserModal
-        selectedAccountId={id as string}
+        selectedAccountId={data?.data?.accountDetails?._id as string}
         isSuspendAccountModalOpen={isSuspendAccountModalOpen}
         setIsSuspendAccountModalOpen={setIsSuspendAccountModalOpen}
+      />
+
+      <RejectIdentityStatus
+        selectedAstrologerId={id as string}
+        isRejectIdentityModalOpen={isRejectIdentityModalOpen}
+        setIsRejectIdentityModalOpen={setIsRejectIdentityModalOpen}
       />
     </div>
   );

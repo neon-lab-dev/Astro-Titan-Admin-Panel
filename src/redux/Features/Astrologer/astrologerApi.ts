@@ -69,19 +69,20 @@ const astrologerApi = baseApi.injectEndpoints({
     //   invalidatesTags: ["course"],
     // }),
 
-    // updateCourse: builder.mutation<any, any>({
-    //   query: ({ id, data }) => ({
-    //     url: `/course/${id}`,
-    //     method: "PUT",
-    //     body: data,
-    //     credentials: "include",
-    //   }),
-    //   invalidatesTags: ["course"],
-    // }),
+    updateIdentityStatus: builder.mutation<any, any>({
+      query: ({ id, data }) => ({
+        url: `/astrologer/update-identity-status/${id}`,
+        method: "PATCH",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["astrologer"],
+    }),
   }),
 });
 
 export const {
   useGetAllAstrologersQuery,
   useGetSingleAstrologerQuery,
+  useUpdateIdentityStatusMutation,
 } = astrologerApi;

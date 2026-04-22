@@ -9,7 +9,7 @@ interface FileUploadInputProps {
   name: string;
   placeholder?: string;
   error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
-  value?: File | File[] | null;
+  value?: any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   defaultValue?: any;
   isDisabled?: boolean;
