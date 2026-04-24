@@ -6,9 +6,9 @@ const productApi = baseApi.injectEndpoints({
     getAllProducts: builder.query<
       any,
       {
-        skip?: number;
         category?: string;
         keyword?: string;
+        skip?: number;
         page?: number;
         limit?: number;
       }

@@ -7,6 +7,7 @@ import {
   LogOut,
   ShoppingBag,
   Flower2,
+  ShoppingCart,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -40,9 +41,14 @@ export function Sidebar() {
       icon: ShoppingBag,
     },
     {
-      label : "Puja",
-      path : "/dashboard/puja",
-      icon : Flower2
+      label: "Puja",
+      path: "/dashboard/puja",
+      icon: Flower2,
+    },
+    {
+      label: "Product Orders",
+      path: "/dashboard/product-orders",
+      icon: ShoppingCart,
     },
     // {
     //   label: "Transactions & Payments",

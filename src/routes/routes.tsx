@@ -15,6 +15,7 @@ import Products from "../pages/Products/Products";
 import Puja from "../pages/Puja/Puja";
 import PujaDetails from "../pages/Puja/PujaDetails";
 import ProductDetails from "../pages/Products/ProductDetails";
+import ProductOrders from "../pages/ProductOrders/ProductOrders";
 
 export const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ export const router = createBrowserRouter([
       {
         path: "subscription-plan",
         element: <SubscriptionPlan />,
+      },
+      {
+        path: "product-orders",
+        element: <ProductOrders />,
       },
     ],
   },
