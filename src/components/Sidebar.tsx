@@ -11,7 +11,7 @@ import {
   Stars,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/images/logo.webp";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/Features/Auth/authSlice";
 
