@@ -8,6 +8,7 @@ import {
   ShoppingBag,
   Flower2,
   ShoppingCart,
+  Stars,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -49,6 +50,11 @@ export function Sidebar() {
       label: "Product Orders",
       path: "/dashboard/product-orders",
       icon: ShoppingCart,
+    },
+    {
+      label: "Kundli Requests",
+      path: "/dashboard/kundli-requests",
+      icon: Stars,
     },
     // {
     //   label: "Transactions & Payments",

@@ -16,6 +16,7 @@ import Puja from "../pages/Puja/Puja";
 import PujaDetails from "../pages/Puja/PujaDetails";
 import ProductDetails from "../pages/Products/ProductDetails";
 import ProductOrders from "../pages/ProductOrders/ProductOrders";
+import KundliRequests from "../pages/KundliRequests/KundliRequests";
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +80,10 @@ export const router = createBrowserRouter([
       {
         path: "product-orders",
         element: <ProductOrders />,
+      },
+      {
+        path: "kundli-requests",
+        element: <KundliRequests />,
       },
     ],
   },

@@ -8,8 +8,8 @@ import type { RootState } from "../store";
 import type { BaseQueryApi, BaseQueryFn, FetchArgs } from "@reduxjs/toolkit/query";
 import type { DefinitionType } from "@reduxjs/toolkit/query";
 
-export const baseUrl = "https://astrotitan-server.onrender.com";
-// export const baseUrl = "http://localhost:5000";
+// export const baseUrl = "https://astrotitan-server.onrender.com";
+export const baseUrl = "http://localhost:5000";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${baseUrl}/api/v1`,
@@ -60,7 +60,8 @@ export const baseApi = createApi({
     "product",
     "puja",
     "category",
-    "productOrder"
+    "productOrder",
+    "kundliRequests"
   ],
   endpoints: () => ({}),
 });
