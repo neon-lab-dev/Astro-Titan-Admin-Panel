@@ -8,7 +8,7 @@ const Layout = () => {
       className={`flex`}
     >
       <Sidebar />
-      <div className="flex-1 flex flex-col bg-[#fbf7eb]">
+      <div className="flex-1 flex flex-col bg-linear-to-r from-[#fff6da] via-[#fff8e0] to-[#F5F5F5]">
         <DashboardHeader />
         <div className="p-6">
           <Outlet />

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { motion, AnimatePresence } from "framer-motion";
-import logo from "../../../assets/logo.png";
+import logo from "../../../assets/images/logo.webp";
 
 interface LogoLoaderProps {
   isLoading?: boolean;

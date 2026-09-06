@@ -27,6 +27,7 @@ import { useActiveAccountMutation } from "../../redux/Features/Account/accountAp
 import toast from "react-hot-toast";
 import LogoLoader from "../../components/shared/LogoLoader/LogoLoader";
 import RejectIdentityStatus from "../../components/AstrologerPage/RejectIdentityStatus/RejectIdentityStatus";
+import { formatDate } from "../../utils/formatDate";
 
 const AstrologerDetails: React.FC = () => {
   const { id } = useParams();
@@ -41,39 +42,6 @@ const AstrologerDetails: React.FC = () => {
     useState<boolean>(false);
 
   const astrologerData = data?.data || {};
-
-  const reviews = [
-    {
-      id: 1,
-      userName: "Priya Sharma",
-      rating: 5,
-      date: "2024-03-15",
-      comment: "Very accurate predictions! Helped me with career decisions.",
-      avatar: "https://randomuser.me/api/portraits/women/1.jpg",
-      likes: 12,
-      replies: 2,
-    },
-    {
-      id: 2,
-      userName: "Rajesh Kumar",
-      rating: 4,
-      date: "2024-03-10",
-      comment: "Good experience, knowledgeable astrologer.",
-      avatar: "https://randomuser.me/api/portraits/men/2.jpg",
-      likes: 8,
-      replies: 1,
-    },
-    {
-      id: 3,
-      userName: "Sneha Patel",
-      rating: 5,
-      date: "2024-03-05",
-      comment: "Amazing session! Very detailed analysis of my horoscope.",
-      avatar: "https://randomuser.me/api/portraits/women/3.jpg",
-      likes: 15,
-      replies: 3,
-    },
-  ];
 
   const handleGoBack = () => {
     window.history.back();
@@ -530,79 +498,34 @@ const AstrologerDetails: React.FC = () => {
           {/* Reviews Tab */}
           {activeTab === "reviews" && (
             <div className="space-y-6">
-              {/* Rating Summary */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                  <div className="text-center">
-                    <div className="text-5xl font-bold text-gray-900 mb-2">
-                      {averageRating}
-                    </div>
-                    <div className="flex justify-center mb-2">
-                      {renderStars(Math.floor(averageRating))}
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      Based on {totalReviews} reviews
-                    </p>
-                  </div>
-                  <div className="flex-1 space-y-2">
-                    {[5, 4, 3, 2, 1].map((star) => {
-                      const percentage = {
-                        5: 75,
-                        4: 15,
-                        3: 5,
-                        2: 3,
-                        1: 2,
-                      }[star];
-                      return (
-                        <div key={star} className="flex items-center gap-3">
-                          <div className="flex items-center gap-1 w-12">
-                            <span className="text-sm">{star}</span>
-                            <FaStar className="w-3 h-3 text-yellow-400" />
-                          </div>
-                          <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-yellow-400 rounded-full"
-                              style={{ width: `${percentage}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm text-gray-600 w-12">
-                            {percentage}%
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
               {/* Reviews List */}
               <div className="space-y-4">
-                {reviews.map((review) => (
+                {astrologerData?.reviews?.map((review: any) => (
                   <div
                     key={review.id}
                     className="bg-white rounded-xl shadow-sm p-6"
                   >
                     <div className="flex gap-4">
                       <img
-                        src={review.avatar}
-                        alt={review.userName}
+                        src={review?.user?.profilePicture}
+                        alt={review?.user?.fullName}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
                           <div>
                             <h4 className="font-semibold text-gray-900">
-                              {review.userName}
+                              {review?.user?.fullName}
                             </h4>
                             <div className="flex items-center gap-2 mt-1">
-                              {renderStars(review.rating)}
+                              {renderStars(review?.rating)}
                               <span className="text-xs text-gray-500">
-                                {new Date(review.date).toLocaleDateString()}
+                                {formatDate(review?.createdAt)}
                               </span>
                             </div>
                           </div>
                         </div>
-                        <p className="text-gray-700 mb-3">{review.comment}</p>
+                        <p className="text-gray-700 mb-3">{review?.review}</p>
                       </div>
                     </div>
                   </div>

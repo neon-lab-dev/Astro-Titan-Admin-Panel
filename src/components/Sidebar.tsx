@@ -8,7 +8,8 @@ import {
   ShoppingBag,
   Flower2,
   ShoppingCart,
-  Stars,
+  Sparkles,
+  StarIcon,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.webp";
@@ -52,9 +53,14 @@ export function Sidebar() {
       icon: ShoppingCart,
     },
     {
+      label: "Consultations",
+      path: "/dashboard/consultations",
+      icon: Sparkles,
+    },
+    {
       label: "Kundli Requests",
       path: "/dashboard/kundli-requests",
-      icon: Stars,
+      icon: StarIcon,
     },
     // {
     //   label: "Transactions & Payments",
@@ -74,14 +80,14 @@ export function Sidebar() {
   };
 
   return (
-    <div className="h-screen w-57 sticky top-0 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+    <div className="h-screen w-60 sticky top-0 left-0 bg-[#715700] border-r border-gray-200 flex flex-col">
       <div className="flex items-center justify-center p-4">
         <Link to={"/dashboard"}>
           <img src={logo} alt="" className="w-14" />
         </Link>
       </div>
 
-      <nav className="flex-1 p-4 overflow-y-auto bg-white dark:bg-gray-800">
+      <nav className="flex-1 p-4 overflow-y-auto bg-[#715700]">
         <div className="space-y-2">
           {sidebarLinks?.map((item) => (
             <Link
@@ -89,8 +95,8 @@ export function Sidebar() {
               to={item.path}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-sm ${
                 item.path === location.pathname
-                  ? "bg-blue-50 dark:bg-blue-900/20 text-yellow-600 dark:text-blue-400"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  ? "bg-blue-50 text-yellow-600"
+                  : "text-gray-300 hover:text-yellow-600 hover:bg-gray-100"
               }`}
             >
               <item.icon className="w-5 h-5" />

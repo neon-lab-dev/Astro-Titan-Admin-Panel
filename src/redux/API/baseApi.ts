@@ -61,7 +61,8 @@ export const baseApi = createApi({
     "puja",
     "category",
     "productOrder",
-    "kundliRequests"
+    "kundliRequests",
+    "consultation"
   ],
   endpoints: () => ({}),
 });
