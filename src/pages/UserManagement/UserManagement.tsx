@@ -14,6 +14,7 @@ const UserManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
+  const [userType, setUserType] = useState<string>("");
   const skip = (page - 1) * limit;
   const [keyword, setKeyword] = useState<string>("");
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
@@ -28,6 +29,7 @@ const UserManagement = () => {
     page,
     limit,
     keyword,
+    isPremiumUser: userType,
   });
 
   const userTheads: any[] = [
@@ -43,9 +45,8 @@ const UserManagement = () => {
     { key: "country", label: "Country" },
     { key: "profileStatus", label: "Profile Status" },
     { key: "accountStatus", label: "Account Status" },
+    { key: "isPremiumUser", label: "User Type" },
   ];
-
-  console.log(data);
 
   const users = data?.data?.users || [];
 
@@ -153,6 +154,14 @@ const UserManagement = () => {
         {user?.accountDetails?.isSuspended ? "Suspended" : "Active"}
       </span>
     ),
+
+    isPremiumUser: (
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-medium`}
+      >
+        {user?.isPremiumUser ? "Premium User" : "Free User"}
+      </span>
+    ),
   }));
 
   const handleSearch = (k: string) => {
@@ -199,6 +208,20 @@ const UserManagement = () => {
     }
   };
 
+  const children = (
+    <div className="flex items-center gap-3">
+      <select
+        value={userType}
+        onChange={(e) => setUserType(e.target.value)}
+        className="input input-sm px-3 py-2 border border-gray-300 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition duration-300 focus:outline-none rounded-md text-sm shadow-sm cursor-pointer"
+      >
+        <option value="">User Type</option>
+        <option value="false">Free</option>
+        <option value="true">Premium</option>
+      </select>
+    </div>
+  );
+
   return (
     <div>
       <Table<any>
@@ -214,6 +237,7 @@ const UserManagement = () => {
         onSearch={handleSearch}
         limit={limit}
         setLimit={setLimit}
+        children={children}
       />
 
       <SuspendUserModal

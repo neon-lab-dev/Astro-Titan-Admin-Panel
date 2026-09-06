@@ -95,7 +95,7 @@ const PujaDetails = () => {
           className="flex items-center gap-2 text-gray-600 hover:text-[#d4af37] transition-colors mb-6"
         >
           <IoArrowBack className="w-5 h-5" />
-          <span className="text-sm font-medium">Back to Pujas</span>
+          <span className="text-sm font-medium">Go Back</span>
         </button>
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -188,7 +188,7 @@ const PujaDetails = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-[#d4af37]" />
-                How This Puja is Performed
+                How This Pooja is Performed
               </h2>
               <div className="prose prose-sm max-w-none">
                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">

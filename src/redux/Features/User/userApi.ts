@@ -12,13 +12,14 @@ const userApi = baseApi.injectEndpoints({
         keyword?: string;
         page?: number;
         limit?: number;
-        hasAppliedForUnlock?: string;
+        isPremiumUser?: string;
       }
     >({
       query: ({
         identityStatus = "",
         country = "",
         keyword = "",
+        isPremiumUser,
         page = 1,
         limit = 10,
         skip,
@@ -31,6 +32,7 @@ const userApi = baseApi.injectEndpoints({
         params.append("page", page.toString());
         params.append("limit", limit.toString());
         if (typeof skip === "number") params.append("skip", skip.toString());
+        if (typeof isPremiumUser === "string") params.append("isPremiumUser", isPremiumUser);
 
         return {
           url: `/user?${params.toString()}`,

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "../../API/baseApi";
 
-const consultationApi = baseApi.injectEndpoints({
+const pujaBookingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllConsultations: builder.query<
+    getAllPujaBookings: builder.query<
       any,
       {
         skip?: number;
@@ -35,16 +35,27 @@ const consultationApi = baseApi.injectEndpoints({
         if (typeof skip === "number") params.append("skip", skip.toString());
 
         return {
-          url: `/consultation?${params.toString()}`,
+          url: `/puja-booking?${params.toString()}`,
           method: "GET",
           credentials: "include",
         };
       },
-      providesTags: ["consultation"],
+      providesTags: ["pujaBooking"],
+    }),
+
+    updateIdentityStatus: builder.mutation<any, any>({
+      query: ({ id, data }) => ({
+        url: `/astrologer/update-identity-status/${id}`,
+        method: "PATCH",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["astrologer"],
     }),
   }),
 });
 
 export const {
-  useGetAllConsultationsQuery,
-} = consultationApi;
+  useGetAllPujaBookingsQuery,
+  useUpdateIdentityStatusMutation,
+} = pujaBookingApi;

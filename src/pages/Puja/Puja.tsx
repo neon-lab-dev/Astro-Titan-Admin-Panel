@@ -44,7 +44,7 @@ const Puja = () => {
     { key: "discount", label: "Discount" },
     { key: "rating", label: "Rating" },
     { key: "targetAudience", label: "Target Audience" },
-    { key: "status", label: "Status" },
+    // { key: "status", label: "Status" },
   ];
 
   const pujas = data?.data?.pujas || [];
@@ -170,17 +170,17 @@ const Puja = () => {
       </div>
     ),
 
-    status: (
-      <span
-        className={`px-3 py-1 rounded-full text-xs font-medium ${
-          puja?.isActive !== false
-            ? "bg-green-100 text-green-700"
-            : "bg-red-100 text-red-700"
-        }`}
-      >
-        {puja?.isActive !== false ? "Active" : "Inactive"}
-      </span>
-    ),
+    // status: (
+    //   <span
+    //     className={`px-3 py-1 rounded-full text-xs font-medium ${
+    //       puja?.isActive !== false
+    //         ? "bg-green-100 text-green-700"
+    //         : "bg-red-100 text-red-700"
+    //     }`}
+    //   >
+    //     {puja?.isActive !== false ? "Active" : "Inactive"}
+    //   </span>
+    // ),
   }));
 
   const handleSearch = (k: string) => {
@@ -275,8 +275,8 @@ const Puja = () => {
   return (
     <div>
       <Table<any>
-        title={`Pujas (${pujaTableData?.length || 0})`}
-        description="Manage all pujas in the system"
+        title={`Pooja (${pujaTableData?.length || 0})`}
+        description="Manage all pooja in the system"
         theads={pujaTheads}
         data={pujaTableData || []}
         actions={actions}

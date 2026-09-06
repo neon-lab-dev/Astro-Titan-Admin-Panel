@@ -43,15 +43,21 @@ export function Sidebar() {
       icon: ShoppingBag,
     },
     {
-      label: "Puja",
-      path: "/dashboard/puja",
-      icon: Flower2,
-    },
-    {
       label: "Product Orders",
       path: "/dashboard/product-orders",
       icon: ShoppingCart,
     },
+    {
+      label: "Pooja",
+      path: "/dashboard/puja",
+      icon: Flower2,
+    },
+    {
+      label: "Pooja Bookings",
+      path: "/dashboard/pooja-bookings",
+      icon: StarIcon,
+    },
+
     {
       label: "Consultations",
       path: "/dashboard/consultations",
@@ -62,6 +68,7 @@ export function Sidebar() {
       path: "/dashboard/kundli-requests",
       icon: StarIcon,
     },
+
     // {
     //   label: "Transactions & Payments",
     //   path: "/dashboard/transactions-payments",
