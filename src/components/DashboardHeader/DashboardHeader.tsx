@@ -1,3 +1,5 @@
+import Notifications from "./Notifications";
+
 export function DashboardHeader() {
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 font-Inter">
@@ -15,6 +17,9 @@ export function DashboardHeader() {
               Admin
             </div>
           </div>
+
+          {/* Notifications Component */}
+          <Notifications />
         </div>
       </div>
     </header>

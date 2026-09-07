@@ -65,6 +65,7 @@ export const baseApi = createApi({
     "consultation",
     "pujaBooking",
     "admin",
+    "notification",
   ],
   endpoints: () => ({}),
 });
