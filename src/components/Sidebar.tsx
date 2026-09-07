@@ -10,6 +10,7 @@ import {
   ShoppingCart,
   Sparkles,
   StarIcon,
+  FileText,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.webp";
@@ -74,11 +75,11 @@ export function Sidebar() {
     //   path: "/dashboard/transactions-payments",
     //   icon: CreditCard,
     // },
-    // {
-    //   label: "Subscription Plan",
-    //   path: "/dashboard/subscription-plan",
-    //   icon: FileText,
-    // },
+    {
+      label: "Subscription Plan",
+      path: "/dashboard/subscription-plan",
+      icon: FileText,
+    },
   ];
 
   const handleLogout = async () => {
